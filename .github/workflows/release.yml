@@ -1,0 +1,83 @@
+# 推一個 v 開頭的 tag（例如 v0.2.5-zhtw.1）就會自動編譯 Windows 安裝檔，
+# 並建立 GitHub Release、把 NSIS 安裝檔上傳成附件。
+# 也可以在 Actions 頁面手動執行（workflow_dispatch），這時需要填 tag 名稱。
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release 的 tag 名稱（例如 v0.2.5-zhtw.1）'
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  VULKAN_SDK_VERSION: '1.4.363.0'
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      # transcribe-cpp 的 vulkan 後端要用 SDK 裡的 glslc 編 shader。
+      # 直接從 LunarG 官方下載、無人值守安裝，不經第三方 action。
+      - name: Cache Vulkan SDK
+        id: vulkan-cache
+        uses: actions/cache@v4
+        with:
+          path: C:\VulkanSDK\${{ env.VULKAN_SDK_VERSION }}
+          key: vulkan-sdk-${{ env.VULKAN_SDK_VERSION }}
+
+      - name: Install Vulkan SDK
+        if: steps.vulkan-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $url = "https://sdk.lunarg.com/sdk/download/$env:VULKAN_SDK_VERSION/windows/vulkan-sdk.exe"
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\vulkan-sdk.exe"
+          & "$env:RUNNER_TEMP\vulkan-sdk.exe" --root "C:\VulkanSDK\$env:VULKAN_SDK_VERSION" --accept-licenses --default-answer --confirm-command install | Out-Host
+          if (-not (Test-Path "C:\VulkanSDK\$env:VULKAN_SDK_VERSION\Bin\glslc.exe")) { throw 'glslc.exe not found after Vulkan SDK install' }
+
+      - name: Set VULKAN_SDK
+        shell: pwsh
+        run: |
+          $sdk = "C:\VulkanSDK\$env:VULKAN_SDK_VERSION"
+          "VULKAN_SDK=$sdk" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "$sdk\Bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      # 快取 Cargo 依賴與 target（含 transcribe.cpp 的 C++ 編譯結果），
+      # 第一次約 30~40 分鐘，之後通常 10 分鐘內。
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: client/src-tauri -> target
+
+      - name: Install frontend dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: client
+          tagName: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          releaseName: SayIt ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          releaseBody: 繁體中文（台灣）版 SayIt。下載下方的 `SayIt_*_x64-setup.exe` 安裝。
+          releaseDraft: false
+          prerelease: false
+          args: --bundles nsis
