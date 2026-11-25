@@ -75,13 +75,13 @@ fn tray_labels(storage: &Storage) -> TrayLabels {
     let zh = ui_is_chinese(storage);
     // mac 菜单的惯例是「退出 SayIt」；Windows 托盘菜单惯例只写「退出」，与原来的网页菜单一致。
     let quit = match (zh, cfg!(target_os = "macos")) {
-        (true, true) => "退出 SayIt",
-        (true, false) => "退出",
+        (true, true) => "結束 SayIt",
+        (true, false) => "結束",
         (false, true) => "Quit SayIt",
         (false, false) => "Quit",
     };
     if zh {
-        TrayLabels { open: "打开 SayIt", ai_on: "AI 整理（已开启）", ai_off: "AI 整理（已关闭）", quit }
+        TrayLabels { open: "開啟 SayIt", ai_on: "AI 整理（已開啟）", ai_off: "AI 整理（已關閉）", quit }
     } else {
         TrayLabels { open: "Open SayIt", ai_on: "AI cleanup (on)", ai_off: "AI cleanup (off)", quit }
     }

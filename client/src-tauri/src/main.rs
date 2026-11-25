@@ -167,12 +167,12 @@ fn notify_storage_recovery(recovery: storage::StorageRecovery) {
     let zh = matches!(locale::system_ui_lang(), locale::Lang::ZhCn);
     let text = match &recovery {
         storage::StorageRecovery::MovedAside { backup, .. } => if zh {
-            format!("SayIt 的本地数据文件损坏，无法读取。\n\n已用全新的数据启动，设置和历史记录暂时为空。\n原文件已保留在：\n{}\n\n如需找回，请把这个文件发给开发者。", backup.display())
+            format!("SayIt 的本機資料檔已損壞，無法讀取。\n\n已用全新的資料啟動，設定和歷史記錄暫時是空的。\n原檔案保留在：\n{}\n\n如需救回，請把這個檔案寄給開發者。", backup.display())
         } else {
             format!("SayIt could not read its local data file because it is damaged.\n\nIt has started with fresh data, so settings and history are empty for now.\nThe original file was kept at:\n{}\n\nSend this file to the developer if you need it recovered.", backup.display())
         },
         storage::StorageRecovery::InMemory { .. } => if zh {
-            "SayIt 无法创建本地数据文件（磁盘已满或没有写入权限）。\n\n本次可以正常使用，但设置和历史记录在退出后不会保存。".to_string()
+            "SayIt 無法建立本機資料檔（磁碟已滿或沒有寫入權限）。\n\n這次可以正常使用，但設定和歷史記錄在結束後不會保存。".to_string()
         } else {
             "SayIt could not create its local data file (the disk may be full or not writable).\n\nYou can use it now, but settings and history will not be saved after you quit.".to_string()
         },
@@ -437,7 +437,7 @@ fn notify_main_window_unavailable() {
     let zh = matches!(locale::system_ui_lang(), locale::Lang::ZhCn);
     // mac 上没有托盘、也不用右键：退出入口是屏幕顶部菜单栏里的 SayIt 图标
     let text = match (zh, cfg!(target_os = "macos")) {
-        (true, false) => "SayIt 的主界面没能启动，语音输入暂时不可用。\n\n请从托盘图标右键退出 SayIt，再重新打开。如果反复出现，请在设置里提交诊断。",
+        (true, false) => "SayIt 的主畫面沒能啟動，語音輸入暫時無法使用。\n\n請在系統匣圖示上按右鍵結束 SayIt，再重新開啟。如果反覆發生，請在設定裡提交診斷。",
         (false, false) => "SayIt's main window failed to start, so voice input is unavailable for now.\n\nPlease quit SayIt from the tray icon and open it again. If this keeps happening, send a diagnostics report from Settings.",
         (true, true) => "SayIt 的主界面没能启动，语音输入暂时不可用。\n\n请点屏幕顶部菜单栏里的 SayIt 图标，选「退出 SayIt」，再重新打开。如果反复出现，请在设置里提交诊断。",
         (false, true) => "SayIt's main window failed to start, so voice input is unavailable for now.\n\nPlease quit SayIt from its icon in the menu bar at the top of the screen, then open it again. If this keeps happening, send a diagnostics report from Settings.",

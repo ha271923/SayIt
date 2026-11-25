@@ -93,7 +93,7 @@
 
   body {
     @apply bg-background text-foreground text-base leading-relaxed;
-    font-family: "Microsoft YaHei", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-family: "Microsoft JhengHei UI", "Microsoft JhengHei", "Microsoft YaHei", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
@@ -105,7 +105,7 @@
      字距偏松）。<html lang> 由 i18n 的 setLocale 写入，所以这条规则跟着
      界面语言走，不跟系统语言 —— 中文用户切到英文界面也应该看到 Segoe UI。 */
   html[lang="en"] body {
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Microsoft YaHei", sans-serif;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Microsoft JhengHei UI", "Microsoft YaHei", sans-serif;
   }
 
   /* macOS（WKWebView）：系统字体和苹方优先，否则装了 Office 的 Mac 会先命中微软雅黑。

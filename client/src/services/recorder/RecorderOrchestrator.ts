@@ -6,6 +6,7 @@ import { resolveAiPolicy, serverShouldPolish, type AiConfigSnapshot } from '../t
 import { getRuntimeServerAiSource } from '../transcription/serverAiSource'
 import { loadSelectionAiConfig } from '../transcription/selectionAi'
 import { isStreamingDisplayReady } from '@/lib/asrModels'
+import { toTraditional } from '@/lib/zhTW'
 import {
   getActivePresetId,
   getPromptPresets,
@@ -1042,7 +1043,7 @@ export class RecorderOrchestrator {
       onPartialASR: (text) => {
         // 仅在录音进行中把流式中间结果推给悬浮窗；下一次 listening 心跳会带上它一起渲染
         if (this.state !== 'recording') return
-        this.overlayService.setStreamingText(text)
+        this.overlayService.setStreamingText(toTraditional(text))
       },
 
       onASR: (result) => {
@@ -2260,6 +2261,10 @@ export class RecorderOrchestrator {
   ) {
     const runId = context.runId
     if (!this.isRunCurrent(runId)) return
+
+    // fork 自訂：辨識與 AI 整理的結果一律先轉成繁體（台灣用語），之後的文字替換、
+    // 插入、歷史記錄都用轉換後的版本。先轉再替換，使用者寫的繁體替換規則才對得上。
+    result = { ...result, asrText: toTraditional(result.asrText), llmText: toTraditional(result.llmText) }
 
     // llmText === asrText 说明这段没经过 AI 整理（极速模式，或后端未跑 LLM 直接回 asrText）。
     // 此时文本仍是纯 ASR，「格式规范」由我们兜底；AI 整理过的文本则把格式交给 AI，只做文本替换。

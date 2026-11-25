@@ -12,6 +12,7 @@
  */
 import en from './locales/en.json'
 import zhCN from './locales/zh-CN.json'
+import { toTraditionalTable } from '@/lib/zhTW'
 
 export const LOCALES = ['zh-CN', 'en'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -26,8 +27,10 @@ export type TranslationKey = keyof typeof zhCN
  * en 表显式标注成「与源表 key 完全一致」，少一个 key 就编译不过。
  * 多出来的 key 由 `__tests__/locales.test.ts` 兜住（类型层面查不出多余键）。
  */
+// fork 自訂：中文界面一律顯示繁體（台灣用語）。locale 代碼仍沿用 'zh-CN'，
+// 這樣 Rust 端、設定備份等所有依賴這個代碼的地方都不必跟著改。
 const TABLES: Record<Locale, Record<TranslationKey, string>> = {
-  'zh-CN': zhCN,
+  'zh-CN': toTraditionalTable(zhCN),
   en,
 }
 
