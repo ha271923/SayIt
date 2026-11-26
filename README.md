@@ -2,154 +2,225 @@
 
 <img src="docs/images/readme/icon.png" width="80" height="80" alt="SayIt">
 
-# SayIt
+# SayIt（繁體中文版）
 
-**Just say it, and write well**
+**隨口說，出色寫**
 
-Open-source voice typing for Windows and macOS. Press a shortcut and speak—SayIt transcribes, cleans up, and inserts polished text wherever your cursor is.
+開源的 Windows 語音輸入工具。按下快捷鍵開始說話，SayIt 會把語音轉成文字、用 AI 整理成書面語，再直接輸入到游標所在的位置。
+
+這個分支（fork）把介面和輸出都改成繁體中文（台灣），並預設以本機模式使用。上游專案是 [crosswk/SayIt](https://github.com/crosswk/SayIt)。
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](./LICENSE)
-[![Platform: Windows | macOS](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS-0078D6)](https://github.com/crosswk/SayIt/releases/latest)
-[![Latest release](https://img.shields.io/github/v/release/crosswk/SayIt?label=release)](https://github.com/crosswk/SayIt/releases/latest)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D6)](https://github.com/ha271923/SayIt/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/ha271923/SayIt?label=release)](https://github.com/ha271923/SayIt/releases/latest)
 
-**[Download for Windows or Mac](https://github.com/crosswk/SayIt/releases/latest)** · **[Try the web demo](https://sayitapp.site)** · **[简体中文](README.zh-CN.md)**
+**[下載 Windows 安裝檔](https://github.com/ha271923/SayIt/releases/latest)** · **[上游專案](https://github.com/crosswk/SayIt)** · **[簡體中文說明（上游）](README.zh-CN.md)**
 
 </div>
 
 <div align="center">
 
-<img src="docs/images/readme/demo-en.gif" width="820" alt="SayIt in action: pressing the shortcut, speaking, and the cleaned-up text appearing at the cursor">
+<img src="docs/images/readme/demo-zh.gif" width="820" alt="SayIt 示範：按下快捷鍵、說話，整理好的文字出現在游標處">
 
-*Trigger the shortcut, speak, and the cleaned-up text is typed in at your cursor — no window switching.*
+*按下快捷鍵、說話，整理好的文字就會打在游標處，不用切換視窗。*
 
 </div>
 
-## Why SayIt?
+## 這個分支改了什麼
 
-Typing is often the slowest part of working with AI. SayIt turns speech into text you can use immediately, while keeping the important choices in your hands:
+- **介面全面繁體中文**：介面文字、系統匣選單、安裝程式都是繁體中文。介面語言選單裡的「繁體中文」取代了原本的簡體中文，另有英文可選。
+- **輸出自動轉成繁體**：語音辨識結果、AI 整理結果和即時字幕，都會經 [OpenCC](https://github.com/nk2028/opencc-js)（離線、`cn → twp`）轉成台灣用語的繁體中文，例如「软件视频」會轉成「軟體影片」。
+- **自動發佈**：推送 `v` 開頭的 tag 時，GitHub Actions 會自動編譯並發佈安裝檔（見 [.github/workflows/release.yml](.github/workflows/release.yml)）。
 
-- **Voice typing anywhere** — dictate into editors, chat apps, browsers, and other apps on Windows and macOS.
-- **Editable AI cleanup** — remove filler words, repair recognition errors, format ideas, or keep a faithful transcript. Every prompt is yours to change.
-- **Context-aware writing** (off by default) — reads the text around your cursor so new dictation matches its tone and terminology. Select text first and your speech becomes an editing instruction—translate, tighten, rewrite, or ask a question—replacing the selection directly. Selection edits use your current AI model by default; choose a separate saved model in AI cleanup → Context awareness. Password fields are skipped.
-- **Flexible speech recognition** — use a cloud ASR provider, run a local GGUF model on your own GPU, connect to the public trial server, or host your own backend.
-- **English and Chinese interface** — the UI follows your system language and can be switched at any time.
-- **Hotwords and per-app rules** — improve names and technical terms, then change cleanup behavior automatically for different apps.
-- **Overlay feedback** — a small waveform overlay shows recording state and elapsed time, with optional live captions while you speak.
-- **Transparent data flow** — the app shows which mode is active and where audio and text are processed.
-- **Local history and diagnostics** — review recordings, re-transcribe them, and collect useful troubleshooting details without guesswork.
+## 功能
 
-## Choose how it runs
+- **任何地方都能語音輸入**：編輯器、聊天軟體、瀏覽器等 Windows 應用程式都能用。
+- **可編輯的 AI 整理**：去除贅字、修正辨識錯誤、整理格式，或保留逐字稿。每一段提示詞都能自己改。
+- **上下文感知**（預設關閉）：讀取游標附近的文字，讓新輸入的內容語氣和用詞一致。先選取文字再說話，語音會變成編輯指令（翻譯、精簡、改寫或提問），直接取代選取內容。密碼欄位會略過。
+- **彈性的語音辨識**：可用雲端 ASR 服務、在自己的 GPU 上跑本機 GGUF 模型，或連到自架的伺服器。
+- **熱詞與個別應用程式規則**：提升人名和專有名詞的辨識率，並依不同應用程式自動切換整理方式。
+- **浮動視窗回饋**：小型波形視窗顯示錄音狀態和經過時間，也可以開啟即時字幕。
+- **資料流向透明**：app 會顯示目前的模式，以及音訊和文字在哪裡處理。
+- **本機歷史紀錄與診斷**：可回顧錄音、重新辨識，並收集排查問題用的資訊。
 
-| Mode | Best for | Data flow |
+## 運作模式
+
+| 模式 | 適合 | 資料流向 |
 | --- | --- | --- |
-| **Local mode** | Privacy and offline use | Speech recognition stays on your PC. With AI cleanup off, nothing leaves the device. |
-| **Cloud API mode** | The best balance for personal use | Your PC talks directly to the ASR and AI providers you configure. No SayIt server is involved. |
-| **Server mode** | Teams and managed deployments | Audio is processed by a SayIt backend you control—or by the public trial server for a quick start. |
+| **本地模式** | 重視隱私、離線使用 | 語音辨識完全在本機執行。AI 整理關閉時，資料不會離開電腦；AI 整理用本機 LLM（Ollama 等）時也不會。 |
+| **雲 API 模式** | 個人日常使用 | 電腦直接連到你設定的 ASR 和 AI 服務商，不經過 SayIt 伺服器。 |
+| **伺服器模式** | 團隊、自架部署 | 音訊送到 SayIt 後端處理。**預設位址是上游作者的公開伺服器 `sayitapp.site`**，不想讓音訊上傳到別人的伺服器，就不要用這個模式，或改成你自架的位址。 |
 
-Local recognition ships seven GGUF models, with GPU acceleration when available: Parakeet Unified EN (fastest and most accurate for English), SenseVoice Small, Fun-ASR Nano, Nemotron 3.5 ASR (32 languages), and three Qwen3-ASR sizes. Cloud recognition supports Doubao, Qwen, OpenAI, Gemini, OpenRouter, Xiaomi MiMo, and Groq Whisper, plus any OpenAI-compatible service at an address you supply; AI cleanup works with DeepSeek, Qwen, Doubao, Zhipu GLM, MiMo, Groq, Ollama, and any OpenAI-compatible endpoint.
+本機辨識內建七種 GGUF 模型，有 GPU 時會自動使用 GPU 加速：Parakeet Unified EN（英文最快最準）、SenseVoice Small、Fun-ASR Nano、Nemotron 3.5 ASR（32 種語言），以及三種大小的 Qwen3-ASR。
 
-## A closer look
+雲端辨識支援豆包、通義千問、OpenAI、Gemini、OpenRouter、小米 MiMo、Groq Whisper，以及任何你提供位址的 OpenAI 相容服務。AI 整理支援 DeepSeek、通義千問、豆包、智譜 GLM、小米 MiMo、Groq、OpenRouter、Ollama，以及任何 OpenAI 相容端點。
 
-<div align="center">
+## 安裝
 
-<img src="docs/images/readme/home-en.png" width="760" alt="SayIt home screen showing dictation stats and a feedback box">
+1. 到 [Releases](https://github.com/ha271923/SayIt/releases/latest) 下載 `SayIt_<版本>_x64-setup.exe`，支援 Windows 10 和 11。
+2. 執行安裝檔。安裝檔沒有程式碼簽章，Windows SmartScreen 會跳出警告，選「其他資訊」→「仍要執行」即可。
+3. 開啟 SayIt，依下面的「前置需求」選一種設定方式。
+4. 在任何應用程式中按下快捷鍵開始說話。預設按一次開始、再按一次結束；另有一組按住說話的快捷鍵。
 
-*Home — dictation stats, the active shortcut, and a feedback box that carries your last transcript.*
+> ⚠️ **不要使用 app 內建的「檢查更新」**。它查詢的是上游作者的伺服器，更新後會被裝回上游的簡體中文版。要更新請到本分支的 [Releases](https://github.com/ha271923/SayIt/releases) 下載新的安裝檔。
 
-<br>
+## 前置需求
 
-<img src="docs/images/readme/voice-engine-en.png" width="760" alt="Voice engine settings with Local, Cloud API, and Server mode cards above the model list">
+SayIt 的處理分成兩段：
 
-*Voice engine — choose Local, Cloud API, or Server mode, then download and switch recognition models. Detected GPUs are used automatically.*
+1. **語音辨識（ASR）**：把聲音轉成文字。
+2. **AI 整理（LLM）**：把口語整理成書面語，可以關閉。
 
-<br>
+這兩段都可以用雲端服務或本機模型，依需求選一種設定。
 
-<img src="docs/images/readme/ai-cleanup-en.png" width="760" alt="AI cleanup settings showing built-in presets and per-app rules">
+### 方案 A：Cloud LLM 設置（雲端）
 
-*AI cleanup — every built-in preset is editable, and per-app rules can switch presets based on the app you are typing into.*
+適合不想佔用本機 GPU、或電腦效能較低的情況。需要網路，以及各服務商的 API Key（多數需付費）。
 
-<br>
+1. **語音辨識**：到「語音引擎」，工作模式選「雲 API 模式」，選一家 ASR 服務商並貼上 API Key。每個欄位旁都有服務商主控台的連結。
+2. **AI 整理**：到「AI 供應商」，選一家服務商（DeepSeek、通義千問、OpenRouter、Groq、智譜 GLM 等），填入 API Key 和模型名稱，再按卡片上的測試按鈕確認連線和延遲。
+3. 到「AI 整理」開啟整理，並選擇要用的預設提示詞。
 
-<img src="docs/images/readme/ai-providers-en.png" width="760" alt="AI providers grid with measured response times on each model card">
+用雲 API 模式時，音訊和文字會送到你設定的服務商處理。
 
-*AI providers — bring your own keys, add any OpenAI-compatible endpoint, and test round-trip latency on every card.*
+### 方案 B：Local LLM 設置（本機，可完全離線）
 
-<br>
+音訊和文字都不會離開電腦。建議有獨立 GPU（支援 Vulkan）；只有 CPU 也能跑，只是比較慢。
 
-<img src="docs/images/readme/history-en.png" width="760" alt="History list with search, raw ASR text, timings, and playback controls">
+#### 1. 本機語音辨識模型（GGUF）
 
-*History — searchable local records. Expand one to see the raw ASR text, timings, audio playback, and re-transcribe.*
+到「語音引擎」，工作模式選「本地模式」，在模型清單中按「下載」即可。中文推薦 **Fun-ASR Nano**（中英日三語，約 850 MB，記憶體約 1.4 GB，速度和準確度都很好）。
 
-<br>
+如果 app 裡無法下載（例如公司網路擋住 Hugging Face），可以手動下載後放到指定位置：
 
-<img src="docs/images/readme/appearance-en.png" width="760" alt="Appearance settings with app themes, waveform themes, overlay width, and a live overlay preview">
+1. 下載 [Fun-ASR-Nano-2512-Q8_0.gguf](https://huggingface.co/cswk/sayit-asr-gguf/resolve/main/Fun-ASR-Nano-2512-Q8_0.gguf)（891,270,912 bytes）。
+2. 放到下面這個路徑，資料夾名稱和檔名都必須完全一致：
 
-*Appearance — three app themes, waveform styles, overlay width, and live captions with a preview of the overlay.*
+   ```text
+   C:\Users\<username>\AppData\Local\com.sayit.app\models\funasr-nano-2512-gguf\Fun-ASR-Nano-2512-Q8_0.gguf
+   ```
 
-</div>
+   `<username>` 是你的 Windows 使用者名稱。也可以在檔案總管的網址列輸入 `%LOCALAPPDATA%\com.sayit.app\models` 直接開啟。
 
-## Get started
+3. 重新開啟 SayIt，或重新進入「語音引擎」頁面，模型會顯示為已下載，選取它即可使用。
 
-1. Download the latest release: `SayIt_<version>_x64-setup.exe` for Windows 10 and 11, or `SayIt_<version>_arm64.dmg` for Macs with Apple silicon on macOS 14 or later.
-2. Open SayIt and choose a voice engine. The default public server is enough for a quick trial.
-3. Press the configured shortcut in any app and speak. By default you press once to start and again to finish; hold-to-talk is available too, under a separate shortcut.
+可以用 PowerShell 確認檔案完整，結果應為 `681CAEF6DF15A2C0E153B40CA7FE4087FDF65751FA5E6FE605D8A75DFF969E61`：
 
-For regular use, choose Local mode or add your own cloud provider keys from the in-app settings. The provider console links are available beside each key field.
+```powershell
+Get-FileHash "$env:LOCALAPPDATA\com.sayit.app\models\funasr-nano-2512-gguf\Fun-ASR-Nano-2512-Q8_0.gguf" -Algorithm SHA256
+```
 
-### First launch on a Mac
+其他模型也是同樣的放法：`models\<資料夾>\<檔名>`。檔案都在 [cswk/sayit-asr-gguf](https://huggingface.co/cswk/sayit-asr-gguf/tree/main)：
 
-The Mac app is signed but not notarized by Apple, so macOS asks you to confirm it once:
+| 模型 | 資料夾 | 檔名 | 大小 |
+| --- | --- | --- | --- |
+| Fun-ASR Nano | `funasr-nano-2512-gguf` | `Fun-ASR-Nano-2512-Q8_0.gguf` | 891 MB |
+| SenseVoice Small | `sensevoice-small-gguf` | `SenseVoiceSmall-Q8_0.gguf` | 253 MB |
+| Qwen3-ASR 0.6B | `qwen3-asr-0.6b-gguf` | `Qwen3-ASR-0.6B-Q8_0.gguf` | 850 MB |
+| Qwen3-ASR 1.7B | `qwen3-asr-1.7b-q4-gguf` | `Qwen3-ASR-1.7B-Q4_K_M.gguf` | 1.32 GB |
+| Qwen3-ASR 1.7B 高精度 | `qwen3-asr-1.7b-gguf` | `Qwen3-ASR-1.7B-Q5_K_M.gguf` | 1.52 GB |
+| Parakeet Unified EN | `parakeet-unified-en-0.6b-gguf` | `parakeet-unified-en-0.6b-Q4_K_M.gguf` | 477 MB |
+| Nemotron 3.5 ASR | `nemotron-asr-streaming-0.6b-gguf` | `nemotron-3.5-asr-streaming-0.6b-Q4_K_M.gguf` | 496 MB |
 
-1. Open the dmg and drag SayIt into Applications. Don't run it from the dmg, or updates can't be installed.
-2. Open SayIt from Applications. When macOS says it can't verify the developer, click Done, then go to System Settings → Privacy & Security, scroll down, and click Open Anyway next to the message about SayIt.
-3. Allow the microphone when asked, and turn SayIt on under System Settings → Privacy & Security → Accessibility. Shortcuts, pasting and reading the text around the cursor all need Accessibility.
+> 只能用上表這幾個檔案。其他來源的同名 GGUF（例如 FunAudioLLM 官方或給 llama.cpp 轉的版本）架構標籤不同，載入時會出現 `unsupported architecture` 錯誤。
+>
+> 如果在「語音引擎」→「進階」→「模型儲存位置」改過路徑，就要放到你設定的那個資料夾底下，而不是 `%LOCALAPPDATA%`。
 
-The default shortcuts on a Mac are Right ⌘ for hands-free (press to start, press again to finish) and Right ⌥ for hold-to-talk. Later updates install from inside the app.
+#### 2. 本機 AI 整理模型（選用）
 
-## Self-hosting
+不需要 AI 整理的話可以跳過，這時只做語音辨識，完全離線。
 
-The backend combines FastAPI, WebSocket streaming, Qwen3-ASR, and an optional OpenAI-compatible cleanup model. Docker Compose is the recommended deployment path.
+**使用 Ollama：**
+
+1. 安裝 [Ollama](https://ollama.com/download)，再下載一個模型，例如：
+
+   ```powershell
+   ollama pull qwen2.5:7b
+   ```
+
+2. 在 SayIt 的「AI 供應商」選「Ollama（本機）」。位址預設是 `http://127.0.0.1:11434`，不需要 API Key。模型填 `qwen2.5:7b`，或你已經下載的其他模型。
+3. 按測試確認連線，再到「AI 整理」開啟整理。
+
+**使用 LM Studio 或其他 OpenAI 相容的本機服務：**
+
+在「AI 供應商」選「OpenAI 相容」：
+
+- 位址填本機服務的位址，例如 LM Studio 的 `http://127.0.0.1:1234/v1`。
+- API Key 隨便填一個值，例如 `lm-studio`。這個欄位不能留空。
+- 模型填服務裡載入的模型名稱。
+
+## 自架伺服器
+
+後端使用 FastAPI、WebSocket 串流、Qwen3-ASR，以及可選的 OpenAI 相容整理模型。建議用 Docker Compose 部署。
 
 ```bash
-git clone https://github.com/crosswk/SayIt.git
+git clone https://github.com/ha271923/SayIt.git
 cd SayIt/server
 cp config.example.yaml config.yaml
 cp .env.example .env
-# Add your provider and deployment settings to .env/config.yaml
+# 在 .env / config.yaml 填入服務商和部署設定
 docker compose up -d --build
 ```
 
-GPU speech recognition requires an NVIDIA GPU; 16 GB or more of VRAM is recommended for the default server model. See the [server guide](server/README.md) for configuration, deployment, security, and API details.
+GPU 語音辨識需要 NVIDIA GPU，預設伺服器模型建議 16 GB 以上 VRAM。設定、部署、安全性和 API 細節請看 [server/README.md](server/README.md)。部署後在 SayIt 的「伺服器模式」把位址改成你的伺服器。
 
-## Performance reference
+## 效能參考
 
-Qwen3-ASR-1.7B with vLLM on an AWS EC2 `g5.xlarge` (NVIDIA A10G 24 GB):
+Qwen3-ASR-1.7B 搭配 vLLM，在 AWS EC2 `g5.xlarge`（NVIDIA A10G 24 GB）上：
 
-| Audio length | ASR latency | RTF |
+| 音訊長度 | ASR 延遲 | RTF |
 | --- | --- | --- |
-| 30 seconds | ~0.8 s | 0.025 |
-| 1 minute | ~1.6 s | 0.026 |
-| 2 minutes | ~2.1 s | 0.017 |
-| 3 minutes | ~2.5 s | 0.014 |
-| 5 minutes | ~3.0 s | 0.010 |
+| 30 秒 | ~0.8 s | 0.025 |
+| 1 分鐘 | ~1.6 s | 0.026 |
+| 2 分鐘 | ~2.1 s | 0.017 |
+| 3 分鐘 | ~2.5 s | 0.014 |
+| 5 分鐘 | ~3.0 s | 0.010 |
 
-## Development
+## 開發
 
-### Desktop client
+### 桌面客戶端
 
-```bash
+需要：
+
+- Node.js 18 以上（CI 使用 22）
+- Rust stable
+- CMake 3.20 以上
+- [Vulkan SDK](https://vulkan.lunarg.com/sdk/home#windows)
+- Visual Studio Build Tools（「使用 C++ 的桌面開發」工作負載）
+
+```powershell
 cd client
 npm install
 npm run tauri dev
 ```
 
-Requirements: Node.js 18+, Rust 1.75+, CMake 3.20+, and the Vulkan SDK. The first native build compiles the C++ speech engine and may take around 20 minutes; later builds use the cache.
+編譯安裝檔：
 
-On non-English Windows installations, set `CL=/utf-8` before building so MSVC reads UTF-8 source files correctly.
+```powershell
+cd client
+npm run tauri build -- --bundles nsis
+```
 
-On macOS (Apple silicon), install the Xcode Command Line Tools (`xcode-select --install`) instead of the Vulkan SDK; local models run on Metal. Release builds come from `client/scripts/macos/build-release.sh`.
+第一次編譯會從原始碼建置 C++ 語音引擎，大約需要 20 分鐘；之後會使用快取。
 
-### Server
+在繁體中文等非英文語系的 Windows 上，編譯前要先設定 `CL=/utf-8`，MSVC 才能正確讀取 UTF-8 原始碼：
+
+```powershell
+$env:CL = '/utf-8'
+```
+
+### 發佈新版
+
+推送 `v` 開頭的 tag，GitHub Actions 就會自動編譯並建立 Release：
+
+```powershell
+git tag v0.2.5-zhtw.2
+git push fork v0.2.5-zhtw.2
+```
+
+安裝檔檔名裡的版本號來自 `client/src-tauri/tauri.conf.json` 的 `version`。
+
+### 伺服器
 
 ```bash
 cd server
@@ -160,46 +231,32 @@ cd backend
 uvicorn app.main:app --port 8000
 ```
 
-Requirements: Python 3.10+ and, for GPU inference, an NVIDIA GPU with CUDA.
+需要 Python 3.10 以上；GPU 推論需要支援 CUDA 的 NVIDIA GPU。
 
-## Project layout
+## 專案結構
 
 ```text
 SayIt/
-├── client/       # Tauri + React desktop client
-├── server/       # FastAPI backend, gateway, web demo, and deployment files
-├── docs/         # User guides and images
-└── dev-docs/     # Internal development notes
+├── client/       # Tauri + React 桌面客戶端
+├── server/       # FastAPI 後端、閘道、網頁示範與部署檔
+├── docs/         # 使用說明與圖片
+└── dev-docs/     # 內部開發筆記
 ```
 
-## Community
+## 回報問題
 
-Follow the WeChat official account for release announcements, or scan the group code to talk things over with other users. Both are Chinese-language channels — for English, open a [GitHub issue](https://github.com/crosswk/SayIt/issues).
+- 繁體中文版本身的問題（翻譯、轉換、安裝檔），請到本分支的 [Issues](https://github.com/ha271923/SayIt/issues)。
+- 功能或辨識引擎的問題，請到上游的 [crosswk/SayIt Issues](https://github.com/crosswk/SayIt/issues)。
 
-<div align="center">
-
-<table>
-<tr>
-<td align="center"><img src="docs/images/readme/wechat-official-account.jpg" width="220" alt="SayIt WeChat official account QR code"><br>Official account</td>
-<td align="center"><img src="docs/images/readme/wechat-group.jpg" width="220" alt="QR code for the SayIt user feedback group on WeChat"><br>User group</td>
-</tr>
-</table>
-
-</div>
-
-## Contributing
-
-Bug reports, focused pull requests, and feature discussions are welcome. Please open a [GitHub issue](https://github.com/crosswk/SayIt/issues) or read the [contribution guide](CONTRIBUTING.md) before submitting a larger change.
-
-## Contributors
+## 貢獻者
 
 <!-- ALL-CONTRIBUTORS-LIST:START -->
 | [<img src="https://github.com/crosswk.png" width="60"><br><sub>crosswk</sub>](https://github.com/crosswk) | [<img src="https://avatars.githubusercontent.com/u/76263028" width="60"><br><sub>Claude (Anthropic)</sub>](https://claude.ai) |
 |:---:|:---:|
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## License
+## 授權
 
 [GNU Affero General Public License v3.0](./LICENSE)
 
-You may use, modify, and self-host SayIt. If you distribute a modified version or run it as a network service, the corresponding source must remain available under the same license.
+你可以使用、修改和自架 SayIt。散布修改版或以網路服務形式提供時，必須以相同授權公開對應的原始碼。
